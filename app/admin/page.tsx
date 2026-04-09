@@ -62,8 +62,17 @@ export default function AdminPage() {
       .update({ status: action })
       .eq('id', userId)
 
-    if (updateError) setError(`Failed to ${action === 'approved' ? 'approve' : 'reject'} user.`)
-    else setPendingUsers(prev => prev.filter(u => u.id !== userId))
+    if (updateError) {
+      setError(`Failed to ${action === 'approved' ? 'approve' : 'reject'} user.`)
+    } else {
+      setPendingUsers(prev => prev.filter(u => u.id !== userId))
+      // Fire approval/rejection email (best-effort — won't block UI)
+      fetch('/api/send-approval-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, action }),
+      }).catch(() => {/* silent fail if email service is down */})
+    }
     setActionLoading(null)
   }
 

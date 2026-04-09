@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
@@ -20,6 +20,34 @@ export default function NewListingPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [checking, setChecking] = useState(true)
+
+  // Gate: only approved members can post
+  useEffect(() => {
+    const checkAccess = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { router.push('/auth/login'); return }
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('status')
+        .eq('id', user.id)
+        .single()
+      if (!profile || profile.status !== 'approved') {
+        router.push('/auth/pending')
+        return
+      }
+      setChecking(false)
+    }
+    checkAccess()
+  }, [router])
+
+  if (checking) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+        <p style={{ color: '#9ca3af' }}>Checking your account...</p>
+      </div>
+    )
+  }
   const [photos, setPhotos] = useState<File[]>([])
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)

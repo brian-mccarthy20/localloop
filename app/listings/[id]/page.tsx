@@ -93,11 +93,11 @@ export default function ListingDetailPage() {
 
     if (error) {
       setMessageError('Failed to send message. Please try again.')
+      setSendingMessage(false)
     } else {
-      setMessageSent(true)
-      setMessageText('')
+      // Open the thread so the buyer can continue the conversation
+      router.push(`/messages/${listing!.id}/${listing!.user_id}`)
     }
-    setSendingMessage(false)
   }
 
   const isOwner = currentUserId === listing?.user_id

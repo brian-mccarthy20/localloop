@@ -21,6 +21,20 @@ export default function NewListingPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [checking, setChecking] = useState(true)
+  const [photos, setPhotos] = useState<File[]>([])
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([])
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [form, setForm] = useState({
+    title: '',
+    description: '',
+    price: '',
+    isFree: false,
+    category: '',
+    size: '',
+    condition: '',
+    gender: '',
+    neighborhood: '',
+  })
 
   // Gate: only approved members can post
   useEffect(() => {
@@ -48,20 +62,6 @@ export default function NewListingPage() {
       </div>
     )
   }
-  const [photos, setPhotos] = useState<File[]>([])
-  const [photoPreviews, setPhotoPreviews] = useState<string[]>([])
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [form, setForm] = useState({
-    title: '',
-    description: '',
-    price: '',
-    isFree: false,
-    category: '',
-    size: '',
-    condition: '',
-    gender: '',
-    neighborhood: '',
-  })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target

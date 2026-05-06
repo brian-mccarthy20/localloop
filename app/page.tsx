@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { Search, MapPin, Tag, Shirt, Bike, BookOpen, Baby } from 'lucide-react'
 import SiteHeader from '@/components/SiteHeader'
+import { useIsMobile } from '@/lib/useIsMobile'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -37,6 +38,7 @@ const CONDITIONS = ['All Conditions', 'New', 'Like New', 'Good', 'Fair']
 const GENDERS = ['All', 'Boy', 'Girl', 'Unisex']
 
 export default function Home() {
+  const isMobile = useIsMobile()
   const [listings, setListings] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -122,7 +124,7 @@ export default function Home() {
           ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 32 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '240px 1fr', gap: isMobile ? 16 : 32 }}>
 
           {/* Filters sidebar */}
           <div>

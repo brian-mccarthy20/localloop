@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import SiteHeader from '@/components/SiteHeader'
+import { useIsMobile } from '@/lib/useIsMobile'
 
 interface Listing {
   id: string
@@ -33,6 +34,7 @@ export default function ListingDetailPage() {
   const router = useRouter()
   const params = useParams()
   const id = params?.id as string
+  const isMobile = useIsMobile()
 
   const [listing, setListing] = useState<Listing | null>(null)
   const [loading, setLoading] = useState(true)
@@ -121,8 +123,8 @@ export default function ListingDetailPage() {
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       <SiteHeader />
 
-      <main style={{ maxWidth: '900px', margin: '40px auto', padding: '0 24px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
+      <main style={{ maxWidth: '900px', margin: isMobile ? '24px auto' : '40px auto', padding: '0 16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? '24px' : '40px' }}>
 
           {/* Photo Gallery */}
           <div>

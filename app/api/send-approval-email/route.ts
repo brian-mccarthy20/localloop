@@ -77,7 +77,10 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Local Loop <hello@localloop-delta.vercel.app>',
+        // Resend's shared sandbox sender — works without DNS verification.
+        // Swap to a verified custom domain (e.g. hello@localloop.app) once
+        // the domain is registered and added to Resend.
+        from: 'Local Loop <onboarding@resend.dev>',
         to: [email],
         subject,
         html,

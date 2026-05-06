@@ -11,20 +11,24 @@ const supabase = createClient(
 
 const NEIGHBORHOODS = [
   'All Neighborhoods',
-  'Hoboken',
-  'Jersey City - Downtown',
-  'Jersey City - Journal Square',
+  'Hoboken - Downtown',
+  'Hoboken - Uptown',
+  'Hoboken - Midtown',
+  'Jersey City - Downtown / Newport',
   'Jersey City - Heights',
+  'Jersey City - Journal Square',
   'Jersey City - Bergen-Lafayette',
   'Jersey City - Greenville',
+  'Jersey City - West Side',
 ]
 
+// `value` is matched case-insensitively against listings.category
 const CATEGORIES = [
   { label: 'All', value: 'all', icon: Tag },
-  { label: 'Clothing', value: 'clothing', icon: Shirt },
-  { label: 'Shoes', value: 'shoes', icon: Baby },
-  { label: 'Gear', value: 'gear', icon: Bike },
-  { label: 'Toys & Books', value: 'toys', icon: BookOpen },
+  { label: 'Clothing', value: 'Clothing', icon: Shirt },
+  { label: 'Shoes', value: 'Shoes', icon: Baby },
+  { label: 'Gear', value: 'Gear', icon: Bike },
+  { label: 'Toys & Books', value: 'Toys & Books', icon: BookOpen },
 ]
 
 const SIZES = ['All Sizes', 'Newborn', '0-3M', '3-6M', '6-12M', '12-18M', '18-24M', '2T', '3T', '4T', '5T', '6', '7', '8', '10', '12', '14', '16']
@@ -51,15 +55,15 @@ export default function Home() {
     let query = supabase
       .from('listings')
       .select(`*, listing_photos(*), profiles(full_name, neighborhood)`)
-      .eq('is_available', true)
       .order('created_at', { ascending: false })
 
-    if (category !== 'all') query = query.eq('category', category)
+    if (category !== 'all') query = query.ilike('category', category)
     if (neighborhood !== 'All Neighborhoods') query = query.eq('neighborhood', neighborhood)
     if (size !== 'All Sizes') query = query.eq('size', size)
-    if (condition !== 'All Conditions') query = query.eq('condition', condition.toLowerCase().replace(' ', '_'))
-    if (gender !== 'All') query = query.eq('gender', gender.toLowerCase())
-    if (listingType !== 'all') query = query.eq('listing_type', listingType)
+    if (condition !== 'All Conditions') query = query.ilike('condition', condition)
+    if (gender !== 'All') query = query.ilike('gender', gender)
+    if (listingType === 'free') query = query.eq('is_free', true)
+    if (listingType === 'for_sale') query = query.eq('is_free', false)
 
     const { data } = await query
     setListings(data || [])
@@ -213,10 +217,10 @@ export default function Home() {
                           <h4 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#1a1a1a', lineHeight: 1.3 }}>{listing.title}</h4>
                           <span style={{
                             fontSize: 12, fontWeight: 600, padding: '2px 8px', borderRadius: 99, marginLeft: 8, whiteSpace: 'nowrap',
-                            backgroundColor: listing.listing_type === 'free' ? '#d8f3dc' : '#fff3cd',
-                            color: listing.listing_type === 'free' ? '#2d6a4f' : '#856404'
+                            backgroundColor: listing.is_free ? '#d8f3dc' : '#fff3cd',
+                            color: listing.is_free ? '#2d6a4f' : '#856404'
                           }}>
-                            {listing.listing_type === 'free' ? 'Free' : `$${listing.price}`}
+                            {listing.is_free ? 'Free' : `$${Number(listing.price).toFixed(0)}`}
                           </span>
                         </div>
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 6 }}>

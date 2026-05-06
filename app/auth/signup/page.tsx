@@ -50,36 +50,46 @@ export default function SignupPage() {
     setError('')
 
     try {
+      // 1. Create the auth user, passing all profile fields as metadata.
+      //    A database trigger on auth.users reads this metadata and writes the
+      //    profile row — that path bypasses RLS so it works even before the
+      //    user has a session (e.g. when email confirmation is required).
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
+        options: {
+          data: {
+            full_name: form.fullName.trim(),
+            neighborhood: form.neighborhood,
+            cross_street: form.crossStreet.trim(),
+            zip_code: form.zipCode.trim(),
+          },
+        },
       })
       if (authError) throw authError
       if (!authData.user) throw new Error('Signup failed')
 
-      let verificationPhotoUrl = null
+      // 2. Upload verification photo and persist its URL on the profile via
+      //    a service-role API route (the user has no session yet, so a direct
+      //    profile UPDATE under RLS would fail).
       if (verificationPhoto) {
-        const ext = verificationPhoto.name.split('.').pop()
-        const path = `verifications/${authData.user.id}.${ext}`
+        const ext = (verificationPhoto.name.split('.').pop() || 'jpg').toLowerCase()
+        const path = `${authData.user.id}.${ext}`
         const { error: uploadError } = await supabase.storage
           .from('verifications')
-          .upload(path, verificationPhoto)
+          .upload(path, verificationPhoto, { upsert: true })
+
         if (!uploadError) {
           const { data: urlData } = supabase.storage.from('verifications').getPublicUrl(path)
-          verificationPhotoUrl = urlData.publicUrl
+          if (urlData?.publicUrl) {
+            await fetch('/api/save-verification-photo', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userId: authData.user.id, photoUrl: urlData.publicUrl }),
+            }).catch(() => {/* non-blocking — admin can still approve */})
+          }
         }
       }
-
-      const { error: profileError } = await supabase.from('profiles').insert({
-        id: authData.user.id,
-        full_name: form.fullName,
-        neighborhood: form.neighborhood,
-        cross_street: form.crossStreet,
-        zip_code: form.zipCode,
-        verification_photo_url: verificationPhotoUrl,
-        status: 'pending',
-      })
-      if (profileError) throw profileError
 
       router.push('/auth/pending')
     } catch (err: unknown) {

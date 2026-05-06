@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import SiteHeader from '@/components/SiteHeader'
 
 interface Message {
   id: string
@@ -97,12 +98,7 @@ export default function MessagesPage() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-      <header style={{ backgroundColor: '#2d6a4f', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <a href="/" style={{ textDecoration: 'none' }}>
-          <h1 style={{ color: 'white', fontSize: '22px', fontWeight: 700, margin: 0 }}>🌿 Local Loop</h1>
-        </a>
-        <a href="/" style={{ color: 'white', fontSize: '14px', textDecoration: 'underline' }}>← Back to listings</a>
-      </header>
+      <SiteHeader />
 
       <main style={{ maxWidth: '680px', margin: '40px auto', padding: '0 24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>

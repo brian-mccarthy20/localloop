@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import SiteHeader from '@/components/SiteHeader'
 
 const CATEGORIES = ['Clothing', 'Shoes', 'Gear', 'Toys & Books']
 const SIZES = ['Newborn', '0-3M', '3-6M', '6-9M', '9-12M', '12-18M', '18-24M', '2T', '3T', '4T', '5T', 'Size 4', 'Size 5', 'Size 6', 'Size 7', 'Size 8', 'Size 10', 'Size 12', 'Size 14', 'Size 16', 'N/A']
@@ -135,12 +136,7 @@ export default function NewListingPage() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-      <header style={{ backgroundColor: '#2d6a4f', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <a href="/" style={{ textDecoration: 'none' }}>
-          <h1 style={{ color: 'white', fontSize: '22px', fontWeight: 700, margin: 0 }}>🌿 Local Loop</h1>
-        </a>
-        <a href="/" style={{ color: 'white', fontSize: '14px', textDecoration: 'underline' }}>← Back to listings</a>
-      </header>
+      <SiteHeader />
 
       <main style={{ maxWidth: '640px', margin: '40px auto', padding: '0 24px' }}>
         <div style={{ backgroundColor: 'white', borderRadius: '12px', padding: '40px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>

@@ -90,7 +90,13 @@ export default function LoginPage() {
             </div>
           </form>
 
-          <div style={{ marginTop: '24px', textAlign: 'center' }}>
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <a href="/auth/forgot-password" style={{ fontSize: '13px', color: '#6b7280', textDecoration: 'underline' }}>
+              Forgot your password?
+            </a>
+          </div>
+
+          <div style={{ marginTop: '12px', textAlign: 'center' }}>
             <a href="/auth/signup" style={{ fontSize: '13px', color: '#2d6a4f', textDecoration: 'underline' }}>
               Don&apos;t have an account? Join Local Loop
             </a>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { Search, MapPin, Tag, Shirt, Bike, BookOpen, Baby } from 'lucide-react'
+import SiteHeader from '@/components/SiteHeader'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -78,21 +79,7 @@ export default function Home() {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9f7f4', fontFamily: 'system-ui, sans-serif' }}>
 
-      {/* Header */}
-      <header style={{ backgroundColor: '#fff', borderBottom: '1px solid #e8e0d8', padding: '0 24px' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{ width: 32, height: 32, borderRadius: '50%', backgroundColor: '#2d6a4f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ color: '#fff', fontSize: 16 }}>↻</span>
-            </div>
-            <span style={{ fontSize: 20, fontWeight: 600, color: '#1a1a1a', letterSpacing: '-0.3px' }}>Local Loop</span>
-          </div>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <a href="/auth/login" style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #d4c9be', backgroundColor: '#fff', color: '#1a1a1a', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Log in</a>
-            <a href="/auth/signup" style={{ padding: '8px 16px', borderRadius: 8, backgroundColor: '#2d6a4f', color: '#fff', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Join Local Loop</a>
-          </div>
-        </div>
-      </header>
+      <SiteHeader />
 
       {/* Hero */}
       <div style={{ backgroundColor: '#2d6a4f', padding: '48px 24px', textAlign: 'center' }}>

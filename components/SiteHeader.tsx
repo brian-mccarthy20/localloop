@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 interface ProfileSummary {
@@ -11,7 +10,6 @@ interface ProfileSummary {
 }
 
 export default function SiteHeader() {
-  const router = useRouter()
   const [loaded, setLoaded] = useState(false)
   const [userId, setUserId] = useState<string | null>(null)
   const [profile, setProfile] = useState<ProfileSummary | null>(null)
@@ -52,8 +50,8 @@ export default function SiteHeader() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
-    router.push('/')
-    router.refresh()
+    // Hard reload to clear all in-memory state (auth client cache, profile, etc.)
+    if (typeof window !== 'undefined') window.location.href = '/'
   }
 
   const isLoggedIn = !!userId

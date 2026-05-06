@@ -56,6 +56,7 @@ export default function Home() {
     let query = supabase
       .from('listings')
       .select(`*, listing_photos(*), profiles(full_name, neighborhood)`)
+      .eq('is_sold', false)
       .order('created_at', { ascending: false })
 
     if (category !== 'all') query = query.ilike('category', category)

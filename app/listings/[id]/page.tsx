@@ -11,6 +11,7 @@ interface Listing {
   description: string
   price: number
   is_free: boolean
+  is_sold: boolean
   category: string
   size: string
   condition: string
@@ -209,10 +210,35 @@ export default function ListingDetailPage() {
               </div>
             )}
 
+            {/* Sold banner */}
+            {listing.is_sold && (
+              <div style={{ backgroundColor: '#fee2e2', color: '#b91c1c', padding: '10px 14px', borderRadius: '10px', fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', textAlign: 'center', marginBottom: '16px' }}>
+                Sold
+              </div>
+            )}
+
             {/* Message / Owner Actions */}
             {isOwner ? (
-              <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '10px', padding: '16px', fontSize: '14px', color: '#166534' }}>
-                This is your listing.
+              <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '10px', padding: '16px' }}>
+                <p style={{ fontSize: '13px', color: '#166534', fontWeight: 600, marginBottom: '12px' }}>This is your listing.</p>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <a
+                    href={`/listings/${listing.id}/edit`}
+                    style={{ padding: '8px 14px', backgroundColor: 'white', color: '#374151', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}
+                  >
+                    Edit
+                  </a>
+                  <a
+                    href="/me/listings"
+                    style={{ padding: '8px 14px', backgroundColor: '#2d6a4f', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}
+                  >
+                    Manage all my listings
+                  </a>
+                </div>
+              </div>
+            ) : listing.is_sold ? (
+              <div style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '16px', fontSize: '14px', color: '#6b7280', textAlign: 'center' }}>
+                This item has been sold and is no longer available.
               </div>
             ) : (
               <div>

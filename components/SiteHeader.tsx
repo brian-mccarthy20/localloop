@@ -97,6 +97,7 @@ export default function SiteHeader() {
         ) : isLoggedIn ? (
           <>
             {isApproved && <a href="/listings/new" style={linkStyle}>Post</a>}
+            {isApproved && <a href="/me/listings" style={linkStyle}>My Listings</a>}
             {isApproved && (
               <a href="/messages" style={{ ...linkStyle, position: 'relative' }}>
                 Messages

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import SiteHeader from '@/components/SiteHeader'
 
@@ -14,8 +14,14 @@ const NEIGHBORHOODS = [
 
 export default function EditProfilePage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const showCompletePrompt = searchParams?.get('complete') === '1'
+  // Read the ?complete=1 flag directly from the browser URL so we don't
+  // need useSearchParams (which requires a Suspense boundary in Next.js 16).
+  const [showCompletePrompt, setShowCompletePrompt] = useState(false)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setShowCompletePrompt(new URLSearchParams(window.location.search).get('complete') === '1')
+    }
+  }, [])
 
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)

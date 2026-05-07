@@ -8,6 +8,8 @@ interface ProfileSummary {
   full_name: string
   status: 'pending' | 'approved' | 'rejected' | string
   role: 'admin' | 'member' | string
+  neighborhood: string | null
+  zip_code: string | null
 }
 
 export default function SiteHeader() {
@@ -33,7 +35,7 @@ export default function SiteHeader() {
       setUserId(user.id)
 
       const [{ data: profileData }, { count }] = await Promise.all([
-        supabase.from('profiles').select('full_name, status, role').eq('id', user.id).single(),
+        supabase.from('profiles').select('full_name, status, role, neighborhood, zip_code').eq('id', user.id).single(),
         supabase
           .from('messages')
           .select('id', { count: 'exact', head: true })
@@ -65,6 +67,15 @@ export default function SiteHeader() {
   const isApproved = profile?.status === 'approved'
   const isAdmin = profile?.role === 'admin'
   const firstName = profile?.full_name?.split(' ')[0] || ''
+  // Approved members whose profile is missing critical fields see a prompt
+  // to finish setting up. We treat full_name (or its email-prefix placeholder),
+  // neighborhood, and zip_code as the minimum required to participate.
+  const needsProfile =
+    isApproved &&
+    (!profile?.neighborhood ||
+      !profile?.zip_code ||
+      !profile?.full_name ||
+      /^[a-z0-9_.+-]+$/i.test(profile.full_name)) // raw email-local-part = unset
 
   const linkStyle: React.CSSProperties = {
     color: 'white', fontSize: '14px', textDecoration: 'none', fontWeight: 500,
@@ -138,6 +149,7 @@ export default function SiteHeader() {
   )
 
   return (
+    <>
     <header style={{
       backgroundColor: '#2d6a4f', padding: isMobile ? '14px 16px' : '14px 24px',
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -182,5 +194,30 @@ export default function SiteHeader() {
         </nav>
       )}
     </header>
+
+    {needsProfile && (
+      <div style={{
+        backgroundColor: '#fef3c7',
+        borderBottom: '1px solid #fcd34d',
+        padding: isMobile ? '12px 16px' : '12px 24px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        gap: '12px', flexWrap: 'wrap',
+      }}>
+        <p style={{ margin: 0, fontSize: '13px', color: '#854d0e', lineHeight: 1.5 }}>
+          <strong>Welcome!</strong> Finish setting up your profile so neighbors know who they&apos;re dealing with.
+        </p>
+        <a
+          href="/me/profile?complete=1"
+          style={{
+            padding: '7px 14px', backgroundColor: '#2d6a4f', color: 'white',
+            borderRadius: '8px', fontSize: '13px', fontWeight: 600, textDecoration: 'none',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          Complete profile →
+        </a>
+      </div>
+    )}
+    </>
   )
 }
